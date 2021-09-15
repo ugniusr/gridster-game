@@ -1,0 +1,149 @@
+body {
+  /* font: 14px "Century Gothic", Futura, sans-serif; */
+  font: 14px "Tahoma", sans-serif;
+  font-weight: lighter;
+  margin: 20px;
+  color: #888;
+}
+
+ol,
+ul {
+  padding-left: 30px;
+}
+
+/* .board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+} */
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.fill__down {
+  background: #e2e2e2;
+}
+.fill__hover {
+  background: #f8f8f8;
+}
+
+.fill__filled {
+  background: #f1f1f1;
+}
+.fill__clear {
+  background: #fff;
+}
+.fill__start {
+  background: #7ed338;
+}
+.fill__end {
+  background: #639530;
+}
+
+.fill__path {
+  background: #f5a640;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.game-controls {
+  display: block;
+  max-width: 331px;
+  min-width: 300px;
+  min-height: 50px;
+  background-color: #f1f1f1;
+  margin-bottom: 1em;
+  border-radius: 3px;
+}
+
+.logo {
+  width: 170px;
+  margin-bottom: 1.5em;
+}
+
+.input-label {
+  color: #888;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+
+.input-integer {
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  font-size: 11px;
+  line-height: 20px;
+  height: 24px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 42px;
+  border-radius: 3px;
+  box-shadow: #555;
+}
+
+.controls-button {
+  background-color: #4a90e2; /* Green */
+  border: 1px solid #4a90e2;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 100;
+  padding: 1px 10px;
+  margin: 27px 25px 15px;
+  border-radius: 3px;
+  height: 25px;
+}
+
+.controls-form {
+  display: flex;
+  flex-direction: row;
+  padding: 0px 25px;
+}
+
+.input-group {
+  float: left;
+  margin-top: 10px;
+  margin-left: 0px;
+  margin-bottom: 15px;
+  margin-right: 0px;
+}
+
+.input-separator {
+  font-size: 10px;
+  margin: 0px 5px;
+  padding: 33px 5px 0px 5px;
+}
