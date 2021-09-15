@@ -2,19 +2,9 @@ import React, { useEffect, useState } from "react";
 import Square from "./elements/Square";
 import * as PF from "pathfinding";
 
-function Board({ numberOfRows = 10, numberOfCols = 10 }) {
-  const [matrix, setMatrix] = useState([
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  ]);
+function Board({ numberOfRows = 9, numberOfCols = 5 }) {
+  const [renderCount, setRenderCount] = useState(0);
+  const [matrix, setMatrix] = useState([[]]);
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [path, setPath] = useState([]);
@@ -40,9 +30,7 @@ function Board({ numberOfRows = 10, numberOfCols = 10 }) {
   };
 
   const updateMatrix = (rowNumber, colNumber, newState) => {
-    // // Copy the matrix
-    // let matrixCopy = matrix.map((rowArray, index) => [...rowArray]);
-    // Modify the matrix
+    // Modify the matrix to match the changes in the grid
     setMatrix((prevMatrix) => {
       let matrixCopy = prevMatrix.map((rowArray) => [...rowArray]);
       matrixCopy[rowNumber][colNumber] = newState;
@@ -84,10 +72,11 @@ function Board({ numberOfRows = 10, numberOfCols = 10 }) {
       isStartPoint={isStartPoint}
       isEndPoint={isEndPoint}
       isPathPoint={isPathPoint}
+      renderCount={renderCount}
     />
   );
 
-  const renderSingleRow = (rowNumber, matrix, startPoint, endPoint, path) => {
+  const renderSingleRow = (rowNumber, startPoint, endPoint, path) => {
     let squares = [];
     for (let colNumber = 0; colNumber < numberOfCols; colNumber++) {
       let isStartPoint =
@@ -103,7 +92,6 @@ function Board({ numberOfRows = 10, numberOfCols = 10 }) {
           rowNumber === path[pathItem][1]
         ) {
           isPathPoint = true;
-          console.log("Path point match:", `${colNumber} ${rowNumber}`);
           break;
         }
       }
@@ -120,22 +108,28 @@ function Board({ numberOfRows = 10, numberOfCols = 10 }) {
     return squares;
   };
 
-  const renderRows = (matrix, startPoint, endPoint, path) => {
+  const renderRows = (startPoint, endPoint, path) => {
     let rows = [];
     for (let i = 0; i < numberOfRows; i++) {
       rows.push(
         <div key={i} className="board-row">
-          {renderSingleRow(i, matrix, startPoint, endPoint, path)}
+          {renderSingleRow(i, startPoint, endPoint, path)}
         </div>
       );
     }
     setRenderArray(rows);
   };
 
+  const generateMatrix = (numberOfRows, numberOfCols) => {
+    return Array(numberOfRows)
+      .fill(1)
+      .map(() => Array(numberOfCols).fill(1));
+  };
+
   useEffect(() => {
     if (!startPoint || !endPoint) return;
     console.log("Rerendering the entire board...");
-    renderRows(matrix, startPoint, endPoint, path);
+    renderRows(startPoint, endPoint, path);
   }, [matrix, path, startPoint, endPoint]);
 
   useEffect(() => {
@@ -154,6 +148,9 @@ function Board({ numberOfRows = 10, numberOfCols = 10 }) {
 
   useEffect(() => {
     // Generate the board (setMatrix)
+    setMatrix(generateMatrix(numberOfRows, numberOfCols));
+    // Repaint the Board
+    setRenderCount((renderCount) => renderCount + 1);
     // Choose start and end points, save them to State
     setStartPoint({
       row: getRandomInt(numberOfRows),
@@ -163,9 +160,13 @@ function Board({ numberOfRows = 10, numberOfCols = 10 }) {
       row: getRandomInt(numberOfRows),
       col: numberOfCols - 1,
     });
-  }, []);
+  }, [numberOfRows, numberOfCols]);
 
-  return <div className="game-board">{renderArray}</div>;
+  return (
+    <div className="game">
+      <div className="game-board">{renderArray}</div>
+    </div>
+  );
 }
 
 export default Board;

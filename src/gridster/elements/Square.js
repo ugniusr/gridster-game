@@ -22,6 +22,7 @@ function Square({
   isStartPoint,
   isEndPoint,
   isPathPoint,
+  renderCount,
 }) {
   const [squareState, setSquareState] = useState(SQUARE_STATES.filled);
   const [squareFill, setSquareFill] = useState(SQUARE_FILLS.filled);
@@ -85,10 +86,11 @@ function Square({
   }, [squareState]);
 
   useEffect(() => {
+    setSquareState(SQUARE_STATES.filled);
     console.log("Re-mounting");
     // fill the square according to it's properties
     fillPathOrDefault(isPathPoint);
-  }, []);
+  }, [renderCount]);
 
   useEffect(() => {
     if (isStartPoint || isEndPoint) return;
