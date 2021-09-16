@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const SQUARE_STATES = {
-  filled: 1,
-  clear: 0,
-};
-
 const SQUARE_FILLS = {
   filled: "filled",
   clear: "clear",
@@ -19,19 +14,16 @@ function Square({
   rowNumber,
   colNumber,
   onChange,
-  isStartPoint,
-  isEndPoint,
-  isPathPoint,
-  renderCount,
+  isStartSquare,
+  isEndSquare,
+  isPathSquare,
+  isFilled,
 }) {
-  const [squareState, setSquareState] = useState(SQUARE_STATES.filled);
   const [squareFill, setSquareFill] = useState(SQUARE_FILLS.filled);
   const isFirstRender = useRef(true);
 
   const handleClick = () => {
-    setSquareState((prevState) => {
-      return isStartPoint || isEndPoint ? prevState : Math.abs(prevState - 1);
-    });
+    onChange(rowNumber, colNumber);
   };
 
   const handleMouseOver = () => {
@@ -44,37 +36,30 @@ function Square({
     setSquareFill(SQUARE_FILLS.hover);
   };
   const handleMouseOut = () => {
-    setColorAccordingToProps();
+    setFillAccordingToProps();
   };
 
-  const setColorAccordingToState = () => {
-    setSquareFill(
-      squareState === SQUARE_STATES.clear
-        ? SQUARE_FILLS.clear
-        : SQUARE_FILLS.filled
-    );
-  };
-
-  const setColorAccordingToProps = () => {
-    if (isStartPoint) {
+  const setFillAccordingToProps = () => {
+    if (isStartSquare) {
       setSquareFill(SQUARE_FILLS.start);
       return;
     }
-    if (isEndPoint) {
+    if (isEndSquare) {
       setSquareFill(SQUARE_FILLS.end);
       return;
     }
-    if (isPathPoint) {
+    if (isPathSquare) {
       setSquareFill(SQUARE_FILLS.path);
       return;
     }
-    setColorAccordingToState();
+    // default
+    setSquareFill(isFilled ? SQUARE_FILLS.filled : SQUARE_FILLS.clear);
   };
 
   useEffect(() => {
     /**
-     * When the square state changes,
-     * trigger re-coloring, and the parent onChange function
+     * When the square state changes or a sqare is part of the path,
+     * trigger re-coloring
      */
     // Do not run on Component mount
     if (isFirstRender.current) {
@@ -82,31 +67,9 @@ function Square({
       return;
     }
     // color appropriately
-    setColorAccordingToState();
-    // pass changes to the parent Component
-    onChange(rowNumber, colNumber, squareState);
+    setFillAccordingToProps();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [squareState]);
-
-  useEffect(() => {
-    /**
-     * When isPathPoint prop changes,
-     * trigger the re-colouring of the Square
-     */
-    setColorAccordingToProps();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPathPoint]);
-
-  useEffect(() => {
-    /**
-     * When the "Generate" button is clicked,
-     * reset the state of the Square
-     */
-    setSquareState(SQUARE_STATES.filled);
-    // fill the square according to it's properties
-    setColorAccordingToProps();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [renderCount]);
+  }, [isFilled, isPathSquare]);
 
   return (
     <button

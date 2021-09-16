@@ -2,6 +2,11 @@ export function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+export function getRandomIntWithExclusion(max, numberToExclude) {
+  let rnd = getRandomInt(max - 1);
+  return rnd !== numberToExclude ? rnd : rnd + 1;
+}
+
 export function ifCoordsMatch(rowNumber, colNumber, point) {
   const { row, col } = point;
   return rowNumber === row && colNumber === col;
