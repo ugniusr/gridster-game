@@ -1,33 +1,20 @@
 import React, { useEffect, useState } from "react";
-import Square from "./elements/Square";
-import * as PF from "pathfinding";
+import Square from "./elements/board/Square";
+import { findPath } from "./libs/pathfinding";
+import {
+  getRandomInt,
+  ifCoordsMatch,
+  ifCoordsInPath,
+  generateMatrix,
+} from "./libs/utils";
 
-function Board({ numberOfRows = 9, numberOfCols = 5 }) {
-  const [renderCount, setRenderCount] = useState(0);
-  const [matrix, setMatrix] = useState([[]]);
+function Board({ numberOfRows, numberOfCols }) {
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
+  const [matrix, setMatrix] = useState([[]]); // tracks the states of a squareArray
+  const [squareMatrix, setSquareMatrix] = useState([[]]); // the rendered array of Squares
   const [path, setPath] = useState([]);
-  const [renderArray, setRenderArray] = useState();
-
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
-
-  const findPath = (matrix, startPoint, endPoint) => {
-    let grid = new PF.Grid(matrix);
-    let finder = new PF.AStarFinder();
-    let path = finder.findPath(
-      startPoint.col,
-      startPoint.row,
-      endPoint.col,
-      endPoint.row,
-      grid
-    );
-    console.log({ startPoint, endPoint });
-    console.log("Path: ", path);
-    setPath(path);
-  };
+  const [renderCount, setRenderCount] = useState(0); // a helper var that tracks the "Generate" button clicks
 
   const updateMatrix = (rowNumber, colNumber, newState) => {
     // Modify the matrix to match the changes in the grid
@@ -39,20 +26,8 @@ function Board({ numberOfRows = 9, numberOfCols = 5 }) {
   };
 
   const handleSquareClick = (rowNumber, colNumber, newSquareState) => {
-    console.log("rowNumber");
-    console.log(rowNumber);
-    console.log("colNumber");
-    console.log(colNumber);
-    console.log("newSquareState");
-    console.log(newSquareState);
+    // when a Square is clicked, the updates are reflected in the matrix
     updateMatrix(rowNumber, colNumber, newSquareState);
-    /**
-     * Check if a CLEAR path exists:
-     * 1. update the Matrix
-     * 2. run a finder algorithm
-     */
-
-    // setActivePath(checkPath(start, end, {rowNumber, colNumber}));
   };
 
   const renderSquare = (
@@ -79,22 +54,9 @@ function Board({ numberOfRows = 9, numberOfCols = 5 }) {
   const renderSingleRow = (rowNumber, startPoint, endPoint, path) => {
     let squares = [];
     for (let colNumber = 0; colNumber < numberOfCols; colNumber++) {
-      let isStartPoint =
-        rowNumber === startPoint.row && colNumber === startPoint.col
-          ? true
-          : false;
-      let isEndPoint =
-        rowNumber === endPoint.row && colNumber === endPoint.col ? true : false;
-      let isPathPoint = false;
-      for (let pathItem = 0; pathItem < path.length; pathItem++) {
-        if (
-          colNumber === path[pathItem][0] &&
-          rowNumber === path[pathItem][1]
-        ) {
-          isPathPoint = true;
-          break;
-        }
-      }
+      let isStartPoint = ifCoordsMatch(rowNumber, colNumber, startPoint);
+      let isEndPoint = ifCoordsMatch(rowNumber, colNumber, endPoint);
+      let isPathPoint = ifCoordsInPath(rowNumber, colNumber, path);
       squares.push(
         renderSquare(
           rowNumber,
@@ -108,64 +70,59 @@ function Board({ numberOfRows = 9, numberOfCols = 5 }) {
     return squares;
   };
 
-  const renderRows = (startPoint, endPoint, path) => {
+  const renderAllRows = (startPoint, endPoint, path) => {
     let rows = [];
-    for (let i = 0; i < numberOfRows; i++) {
+    for (let rowNumber = 0; rowNumber < numberOfRows; rowNumber++) {
       rows.push(
-        <div key={i} className="board-row">
-          {renderSingleRow(i, startPoint, endPoint, path)}
+        <div key={rowNumber} className="board-row">
+          {renderSingleRow(rowNumber, startPoint, endPoint, path)}
         </div>
       );
     }
-    setRenderArray(rows);
-  };
-
-  const generateMatrix = (numberOfRows, numberOfCols) => {
-    return Array(numberOfRows)
-      .fill(1)
-      .map(() => Array(numberOfCols).fill(1));
+    setSquareMatrix(rows);
   };
 
   useEffect(() => {
     if (!startPoint || !endPoint) return;
     console.log("Rerendering the entire board...");
-    renderRows(startPoint, endPoint, path);
+    renderAllRows(startPoint, endPoint, path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matrix, path, startPoint, endPoint]);
 
   useEffect(() => {
     if (!startPoint || !endPoint || !matrix) return;
     console.log("NEW matrix", matrix);
-    findPath(matrix, startPoint, endPoint);
+    setPath(findPath(matrix, startPoint, endPoint));
   }, [matrix, startPoint, endPoint]);
 
   useEffect(() => {
     if (!startPoint || !endPoint) return;
-    console.log("startPoint", startPoint);
-    console.log("endPoint", endPoint);
     updateMatrix(startPoint.row, startPoint.col, 0);
     updateMatrix(endPoint.row, endPoint.col, 0);
   }, [startPoint, endPoint]);
 
   useEffect(() => {
+    /**
+     * This is the starting Hook to trigger the initial Board setup (and reset)
+     */
     // Generate the board (setMatrix)
     setMatrix(generateMatrix(numberOfRows, numberOfCols));
-    // Repaint the Board
+    // Trigger the re-rendering of the Board
     setRenderCount((renderCount) => renderCount + 1);
-    // Choose start and end points, save them to State
+    // Choose start and end points
     setStartPoint({
       row: getRandomInt(numberOfRows),
-      col: 0,
+      col: 0, // always the first column
     });
     setEndPoint({
       row: getRandomInt(numberOfRows),
-      col: numberOfCols - 1,
+      col: numberOfCols - 1, // always the last column
     });
   }, [numberOfRows, numberOfCols]);
 
   return (
     <div className="game">
-      <div className="game-board">{renderArray}</div>
+      <div className="game-board">{squareMatrix}</div>
     </div>
   );
 }

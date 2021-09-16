@@ -1,37 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import IntegerInput from "./elements/controls/IntegerInput";
 import InputSeparator from "./elements/controls/InputSeparator";
 import { useForm } from "react-hook-form";
-
-const BUTTON_FILLS = {
-  default: "default",
-  hover: "hover",
-  down: "down",
-};
+import Button from "./elements/controls/Button";
 
 function Controls({ defaultRows, defaultColumns, handleChange }) {
-  const [buttonFill, setButtonFill] = useState(BUTTON_FILLS.default);
   const { register, handleSubmit } = useForm();
 
-  const handleMouseOver = () => {
-    setButtonFill(BUTTON_FILLS.hover);
-  };
-
-  const handleMouseDown = () => {
-    setButtonFill(BUTTON_FILLS.down);
-  };
-  const handleMouseUp = () => {
-    setButtonFill(BUTTON_FILLS.hover);
-  };
-  const handleMouseOut = () => {
-    setButtonFill(BUTTON_FILLS.default);
-  };
-
-  const onSubmit = (data, e) => {
-    console.log(data, e);
+  const onSubmit = (data) => {
     const { rows, columns } = data;
     handleChange(rows, columns);
   };
+
   return (
     <div className="game-controls">
       <form className="controls-form" onSubmit={handleSubmit(onSubmit)}>
@@ -48,24 +28,7 @@ function Controls({ defaultRows, defaultColumns, handleChange }) {
           defaultVal={defaultColumns}
           register={register}
         />
-        <button
-          className={`controls-button btn-fill__${buttonFill}`}
-          type="submit"
-          onMouseDown={() => {
-            handleMouseDown();
-          }}
-          onMouseUp={() => {
-            handleMouseUp();
-          }}
-          onMouseOver={() => {
-            handleMouseOver();
-          }}
-          onMouseOut={() => {
-            handleMouseOut();
-          }}
-        >
-          Generate
-        </button>
+        <Button type="submit" />
       </form>
     </div>
   );

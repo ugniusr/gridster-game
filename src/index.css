@@ -110,8 +110,8 @@ ul {
   height: 24px;
   margin-right: -1px;
   margin-top: -1px;
-  padding: 0;
-  text-align: center;
+  padding: 0px 0px;
+  text-align: right;
   width: 42px;
   border-radius: 3px;
   box-shadow: #555;

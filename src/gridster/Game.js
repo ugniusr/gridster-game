@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Board from "./Board";
 import Controls from "./Controls";
 import Logo from "./Logo";
-// import Legend from "./Legend";
 
 function Game() {
   const defaultRows = 10;
@@ -23,8 +22,6 @@ function Game() {
         handleChange={onSettingsChange}
       />
       <Board numberOfRows={numberOfRows} numberOfCols={numberOfColumns} />
-
-      {/* <Legend /> */}
     </div>
   );
 }
