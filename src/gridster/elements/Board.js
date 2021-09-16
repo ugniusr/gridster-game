@@ -17,15 +17,25 @@ function Board({ numberOfRows, numberOfCols }) {
   const [renderCount, setRenderCount] = useState(0); // a helper var that tracks the "Generate" button clicks
 
   const updateMatrix = (rowNumber, colNumber, newState) => {
+    console.log("Called update Matrix:");
+    console.log("PREV matrix: ", matrix);
     // Modify the matrix to match the changes in the grid
-    setMatrix((prevMatrix) => {
-      let matrixCopy = prevMatrix.map((rowArray) => [...rowArray]);
-      matrixCopy[rowNumber][colNumber] = newState;
-      return matrixCopy;
-    });
+    setMatrix((prevMatrix) =>
+      prevMatrix.map((row, rowIndex) =>
+        row.map((origState, colIndex) =>
+          rowNumber === rowIndex && colNumber === colIndex
+            ? newState
+            : origState
+        )
+      )
+    );
   };
 
   const handleSquareClick = (rowNumber, colNumber, newSquareState) => {
+    console.log("Clicked a square with params:");
+    console.log(rowNumber);
+    console.log(colNumber);
+    console.log(newSquareState);
     // when a Square is clicked, the updates are reflected in the matrix
     updateMatrix(rowNumber, colNumber, newSquareState);
   };
@@ -89,6 +99,7 @@ function Board({ numberOfRows, numberOfCols }) {
      */
     if (!startPoint || !endPoint) return;
     renderAllRows(startPoint, endPoint, path);
+    console.log("PATH:", path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, startPoint, endPoint]);
 
@@ -99,6 +110,8 @@ function Board({ numberOfRows, numberOfCols }) {
      */
     if (!startPoint || !endPoint || !matrix) return;
     setPath(findPath(matrix, startPoint, endPoint));
+    console.log("NEW matrix:", matrix);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matrix, startPoint, endPoint]);
 
   useEffect(() => {
@@ -109,6 +122,9 @@ function Board({ numberOfRows, numberOfCols }) {
     if (!startPoint || !endPoint) return;
     updateMatrix(startPoint.row, startPoint.col, 0);
     updateMatrix(endPoint.row, endPoint.col, 0);
+    console.log(startPoint);
+    console.log(endPoint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startPoint, endPoint]);
 
   useEffect(() => {
