@@ -3,7 +3,6 @@ import Square from "./board/Square";
 import { findPath } from "../libs/pathfinding";
 import {
   getRandomInt,
-  getRandomIntWithExclusion,
   ifCoordsMatch,
   ifCoordsInPath,
   generateMatrix,
@@ -27,8 +26,6 @@ function Board({ numberOfRows, numberOfCols }) {
       : SQUARE_STATES.filled;
 
   const updateSquareStateMatrix = (rowNumber, colNumber, newState) => {
-    console.log("Called update squareStateMatrix:");
-    console.log("PREV squareStateMatrix: ", squareStateMatrix);
     // Modify the squareStateMatrix to match the changes in the grid
     setSquareStateMatrix((prevSquareStateMatrix) =>
       prevSquareStateMatrix.map((row, rowIndex) =>
@@ -51,9 +48,6 @@ function Board({ numberOfRows, numberOfCols }) {
   };
 
   const handleSquareClick = (rowNumber, colNumber) => {
-    console.log("Clicked a square with params:");
-    console.log(rowNumber);
-    console.log(colNumber);
     // if newState, then update the squareStateMatrix
     let newState = newSquareStateAfterClick(rowNumber, colNumber);
     if (newState !== squareStateMatrix[rowNumber][colNumber])
@@ -121,7 +115,6 @@ function Board({ numberOfRows, numberOfCols }) {
      */
     if (!startSquare || !endSquare) return;
     renderAllRows(startSquare, endSquare, path);
-    console.log("PATH:", path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, startSquare, endSquare]);
 
@@ -132,7 +125,6 @@ function Board({ numberOfRows, numberOfCols }) {
      */
     if (!startSquare || !endSquare || !squareStateMatrix) return;
     setPath(findPath(squareStateMatrix, startSquare, endSquare));
-    console.log("NEW squareStateMatrix:", squareStateMatrix);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [squareStateMatrix, startSquare, endSquare]);
 
@@ -158,18 +150,12 @@ function Board({ numberOfRows, numberOfCols }) {
     // Generate the board (setSquareStateMatrix)
     setSquareStateMatrix(generateMatrix(numberOfRows, numberOfCols));
     // Choose start and end squares
-    let randomStartSquareRow = getRandomInt(numberOfRows);
     setStartSquare({
-      row: randomStartSquareRow,
+      row: getRandomInt(numberOfRows),
       col: 0, // always the first column
     });
-    // in the edge-case of only 1 column, avoid overlapping Start and End squares
-    let randomEndSquareRow =
-      numberOfCols === 1 && numberOfRows > 1
-        ? getRandomIntWithExclusion(numberOfRows, randomStartSquareRow)
-        : getRandomInt(numberOfRows);
     setEndSquare({
-      row: randomEndSquareRow,
+      row: getRandomInt(numberOfRows),
       col: numberOfCols - 1, // always the last column
     });
   }, [numberOfRows, numberOfCols]);
