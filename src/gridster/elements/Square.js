@@ -43,7 +43,7 @@ function Square({
     setSquareFill(SQUARE_FILLS.down);
   };
   const handleMouseUp = () => {
-    fillPathOrDefault(isPathPoint);
+    setSquareFill(SQUARE_FILLS.hover);
   };
   const handleMouseOut = () => {
     fillPathOrDefault(isPathPoint);

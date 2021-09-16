@@ -183,15 +183,15 @@ ul {
   border-radius: 3px;
   height: 15px;
 }
-.btn-default-color {
-  background-color: #4a90e2; /* Green */
+.btn-fill__default {
+  background-color: #4a90e2;
   border: 1px solid #4a90e2;
 }
-.btn-hover-color {
-  background-color: #77b5f8; /* Green */
+.btn-fill__hover {
+  background-color: #77b5f8;
   border: 1px solid #77b5f8;
 }
-.btn-down-color {
-  background-color: #235896; /* Green */
+.btn-fill__down {
+  background-color: #235896;
   border: 1px solid #235896;
 }
