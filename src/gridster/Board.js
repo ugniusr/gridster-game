@@ -130,6 +130,7 @@ function Board({ numberOfRows = 9, numberOfCols = 5 }) {
     if (!startPoint || !endPoint) return;
     console.log("Rerendering the entire board...");
     renderRows(startPoint, endPoint, path);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matrix, path, startPoint, endPoint]);
 
   useEffect(() => {

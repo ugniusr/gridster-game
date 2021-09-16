@@ -83,6 +83,7 @@ function Square({
     console.log(squareState);
     setColorAccordingToState();
     onChange(rowNumber, colNumber, squareState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [squareState]);
 
   useEffect(() => {
@@ -90,11 +91,13 @@ function Square({
     console.log("Re-mounting");
     // fill the square according to it's properties
     fillPathOrDefault(isPathPoint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [renderCount]);
 
   useEffect(() => {
     if (isStartPoint || isEndPoint) return;
     fillPathOrDefault(isPathPoint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPathPoint]);
 
   return (
