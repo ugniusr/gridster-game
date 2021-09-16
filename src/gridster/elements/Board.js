@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Square from "./elements/board/Square";
-import { findPath } from "./libs/pathfinding";
+import Square from "./board/Square";
+import { findPath } from "../libs/pathfinding";
 import {
   getRandomInt,
   ifCoordsMatch,
   ifCoordsInPath,
   generateMatrix,
-} from "./libs/utils";
+} from "../libs/utils";
 
 function Board({ numberOfRows, numberOfCols }) {
   const [startPoint, setStartPoint] = useState(null);
@@ -83,19 +83,29 @@ function Board({ numberOfRows, numberOfCols }) {
   };
 
   useEffect(() => {
+    /**
+     * If the PATH or the start- or end-Points change,
+     * re-render the Board with new params
+     */
     if (!startPoint || !endPoint) return;
-    console.log("Rerendering the entire board...");
     renderAllRows(startPoint, endPoint, path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matrix, path, startPoint, endPoint]);
+  }, [path, startPoint, endPoint]);
 
   useEffect(() => {
+    /**
+     * Once the matrix is modified, look for a PATH
+     * between the start- and end-Points
+     */
     if (!startPoint || !endPoint || !matrix) return;
-    console.log("NEW matrix", matrix);
     setPath(findPath(matrix, startPoint, endPoint));
   }, [matrix, startPoint, endPoint]);
 
   useEffect(() => {
+    /**
+     * Update the Matrix, so that the start- and end-Point
+     * states are set to "clear" (0)
+     */
     if (!startPoint || !endPoint) return;
     updateMatrix(startPoint.row, startPoint.col, 0);
     updateMatrix(endPoint.row, endPoint.col, 0);

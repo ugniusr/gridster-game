@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "./assets/Gridster-Logo.png";
+import logo from "../assets/Gridster-Logo.png";
 
 function Logo() {
   return (

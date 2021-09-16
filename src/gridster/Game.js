@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Board from "./Board";
-import Controls from "./Controls";
-import Logo from "./Logo";
+import Board from "./elements/Board";
+import Controls from "./elements/Controls";
+import Logo from "./elements/Logo";
 
 function Game() {
   const defaultRows = 10;

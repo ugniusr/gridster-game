@@ -1,8 +1,8 @@
 import React from "react";
-import IntegerInput from "./elements/controls/IntegerInput";
-import InputSeparator from "./elements/controls/InputSeparator";
+import IntegerInput from "./controls/IntegerInput";
+import InputSeparator from "./controls/InputSeparator";
 import { useForm } from "react-hook-form";
-import Button from "./elements/controls/Button";
+import Button from "./controls/Button";
 
 function Controls({ defaultRows, defaultColumns, handleChange }) {
   const { register, handleSubmit } = useForm();

@@ -29,7 +29,6 @@ function Square({
   const isFirstRender = useRef(true);
 
   const handleClick = () => {
-    console.log("click");
     setSquareState((prevState) => {
       return isStartPoint || isEndPoint ? prevState : Math.abs(prevState - 1);
     });
@@ -38,7 +37,6 @@ function Square({
   const handleMouseOver = () => {
     setSquareFill(SQUARE_FILLS.hover);
   };
-
   const handleMouseDown = () => {
     setSquareFill(SQUARE_FILLS.down);
   };
@@ -46,7 +44,7 @@ function Square({
     setSquareFill(SQUARE_FILLS.hover);
   };
   const handleMouseOut = () => {
-    fillPathOrDefault(isPathPoint);
+    setColorAccordingToProps();
   };
 
   const setColorAccordingToState = () => {
@@ -57,7 +55,7 @@ function Square({
     );
   };
 
-  const fillPathOrDefault = (isPathPoint) => {
+  const setColorAccordingToProps = () => {
     if (isStartPoint) {
       setSquareFill(SQUARE_FILLS.start);
       return;
@@ -74,53 +72,51 @@ function Square({
   };
 
   useEffect(() => {
+    /**
+     * When the square state changes,
+     * trigger re-coloring, and the parent onChange function
+     */
+    // Do not run on Component mount
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    // default is always "Filled"
-    console.log("squareState: ");
-    console.log(squareState);
+    // color appropriately
     setColorAccordingToState();
+    // pass changes to the parent Component
     onChange(rowNumber, colNumber, squareState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [squareState]);
 
   useEffect(() => {
-    setSquareState(SQUARE_STATES.filled);
-    console.log("Re-mounting");
-    // fill the square according to it's properties
-    fillPathOrDefault(isPathPoint);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [renderCount]);
-
-  useEffect(() => {
-    if (isStartPoint || isEndPoint) return;
-    fillPathOrDefault(isPathPoint);
+    /**
+     * When isPathPoint prop changes,
+     * trigger the re-colouring of the Square
+     */
+    setColorAccordingToProps();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPathPoint]);
+
+  useEffect(() => {
+    /**
+     * When the "Generate" button is clicked,
+     * reset the state of the Square
+     */
+    setSquareState(SQUARE_STATES.filled);
+    // fill the square according to it's properties
+    setColorAccordingToProps();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [renderCount]);
 
   return (
     <button
       className={`square fill__${squareFill}`}
-      onClick={() => {
-        handleClick();
-      }}
-      onMouseDown={() => {
-        handleMouseDown();
-      }}
-      onMouseUp={() => {
-        handleMouseUp();
-      }}
-      onMouseOver={() => {
-        handleMouseOver();
-      }}
-      onMouseOut={() => {
-        handleMouseOut();
-      }}
-    >
-      {/* TODO */}
-    </button>
+      onClick={handleClick}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+    ></button>
   );
 }
 
